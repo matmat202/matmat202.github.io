@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Everything I've Published</title>
+<meta name="description" content="A directory of the sites published at matmat202.github.io — campus tools, each one a working page you can open on a phone.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f7f7f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131518" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+/* A directory, not a portfolio. Its one job is to get you into the right site in one tap,
+   on a phone, so the cards are the page and everything else gets out of the way.
+
+   The token names are deliberately the same ones the destination sites use
+   (--ground/--ink/--ink-2/--line/--accent): three sites by one hand should not each
+   invent a vocabulary. The typefaces are NOT shared — dining is Zilla Slab + Archivo and
+   park is Oswald + IBM Plex, so a third pairing keeps the hub from looking like a
+   mis-skinned copy of whichever one you saw last. */
+:root{
+  --ground:#f7f7f5; --card:#ffffff; --card-2:#fbfbfa;
+  --ink:#15171a; --ink-2:#565d66; --ink-3:#626972;
+  --line:#dddfdb; --line-2:#c7cac5;
+  --accent:#2f4858;
+  --warn:#9a3412;
+  --shadow:0 1px 2px rgba(18,22,26,.05), 0 6px 18px -10px rgba(18,22,26,.22);
+  --f-display:"Bricolage Grotesque","Trebuchet MS",Verdana,sans-serif;
+  --f-ui:"Public Sans","Helvetica Neue",Arial,sans-serif;
+  /* Each card's colour comes from the site it opens, set inline per <li>. These are the
+     fallbacks for a card that somehow arrives without them. */
+  --site:#6b7280; --site-dark:#9aa3ad;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --ground:#131518; --card:#191c20; --card-2:#1d2126;
+    --ink:#e8ebee; --ink-2:#a3aab2; --ink-3:#848c95;
+    --line:#2a2e33; --line-2:#3a3f46;
+    --accent:#8fb8cc;
+    --warn:#f0a37a;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 22px -12px rgba(0,0,0,.7);
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--f-ui); font-size:16px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  padding-inline:20px;
+  padding-block:clamp(36px,8vw,76px) 40px;
+  padding-bottom:max(40px,env(safe-area-inset-bottom));
+}
+.wrap{max-width:720px;margin:0 auto}
+
+header{margin:0 0 clamp(26px,5vw,40px)}
+h1{
+  font-family:var(--f-display); font-weight:700;
+  font-size:clamp(30px,7.5vw,46px); line-height:1.08; letter-spacing:-.018em;
+  margin:0 0 10px; text-wrap:balance;
+}
+.sub{margin:0;color:var(--ink-2);font-size:15.5px;max-width:48ch}
+.sub code{
+  font-family:var(--f-ui); font-weight:600; font-size:inherit;
+  color:var(--ink); background:var(--card); padding:1px 6px;
+  border:1px solid var(--line); border-radius:5px; white-space:nowrap;
+}
+
+ul{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+@media (min-width:720px){ ul{grid-template-columns:1fr 1fr} }
+
+.site{
+  /* --rail has to be resolved HERE, not on :root. A custom property inherits its
+     COMPUTED value, so `--rail:var(--site)` written on :root resolves against :root's
+     own --site — the grey fallback — and every card painted the same slate while the
+     inline --site sat on the <li> doing nothing. Declaring it on .site puts each card's
+     own value in scope. */
+  --rail:var(--site);
+  background:var(--card); border:1px solid var(--line); border-radius:12px;
+  box-shadow:var(--shadow); overflow:hidden;
+  display:flex; flex-direction:column;
+  transition:border-color .14s ease, transform .14s ease, box-shadow .14s ease;
+}
+/* The destination's own accent, as a rail down the opening edge. The card is the only
+   place that colour appears, so a shelf of sites reads as the sites and not as a set of
+   identical tiles. Text stays on the ink tokens — a blurb in the site's accent would be
+   a different contrast problem on every card. */
+.site::before{content:"";display:block;height:3px;background:var(--rail)}
+.site:hover{border-color:var(--line-2);transform:translateY(-1px)}
+.site:has(.hit:focus-visible){border-color:var(--rail)}
+
+.hit{
+  display:flex; flex-direction:column; gap:7px; flex:1;
+  padding:17px 18px 15px; text-decoration:none; color:inherit;
+  outline:none;
+}
+.hit:focus-visible{outline:2px solid var(--rail);outline-offset:-3px;border-radius:9px}
+h2{
+  font-family:var(--f-display); font-weight:700; font-size:20px;
+  letter-spacing:-.011em; line-height:1.2; margin:0; color:var(--ink);
+}
+.blurb{margin:0;color:var(--ink-2);font-size:14.5px;line-height:1.45;flex:1}
+.where{
+  margin:6px 0 0; display:flex; align-items:center; gap:8px;
+  font-size:12.5px; color:var(--ink-3);
+}
+.host{
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.go{
+  margin-left:auto; color:var(--rail); font-size:16px; line-height:1;
+  transition:transform .14s ease;
+}
+.site:hover .go{transform:translateX(3px)}
+.warn{
+  margin:0; padding:9px 18px 12px; font-size:13px; color:var(--warn);
+  background:var(--card-2); border-top:1px solid var(--line);
+}
+
+footer{
+  margin-top:clamp(30px,6vw,46px); padding-top:16px; border-top:1px solid var(--line);
+  color:var(--ink-3); font-size:13px;
+  display:flex; flex-wrap:wrap; gap:4px 14px; align-items:baseline;
+}
+footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+footer a:hover{text-decoration-thickness:2px}
+
+@media (prefers-color-scheme:dark){ .site{--rail:var(--site-dark)} }
+
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important}
+  .site:hover{transform:none}
+  .site:hover .go{transform:none}
+}
+</style>
+
+<body>
+<div class="wrap">
+  <header>
+    <h1>Everything I&rsquo;ve published</h1>
+    <p class="sub">3 sites, all served from <code>matmat202.github.io</code>.</p>
+  </header>
+
+  <main>
+    <ul>
+      <li class="site" style="--site:#8c1515;--site-dark:#e36a63">
+        <a class="hit" href="https://matmat202.github.io/free-rooms/">
+          <h2>Free classrooms · Stanford</h2>
+          <p class="blurb">Free Stanford classrooms right now, from ExploreCourses</p>
+          <p class="where"><span class="host">matmat202.github.io/free-rooms</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#8c1515;--site-dark:#e36a63">
+        <a class="hit" href="https://matmat202.github.io/stanford-dining-menus/">
+          <h2>Stanford Dining Menus</h2>
+          <p class="blurb">Every Stanford dining hall menu, with hours, distance and allergen filters. Built for phones.</p>
+          <p class="where"><span class="host">matmat202.github.io/stanford-dining-menus</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#b45309;--site-dark:#e8921f">
+        <a class="hit" href="https://matmat202.github.io/where-did-i-park/">
+          <h2>Where Did I Park</h2>
+          <p class="blurb">Infers where you parked from your speed and position, and points you back. Nothing leaves your phone.</p>
+          <p class="where"><span class="host">matmat202.github.io/where-did-i-park</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+    </ul>
+  </main>
+
+  <footer>
+    <span>Rebuilt <time datetime="2026-10-25T23:05:56.879145+00:00">25 October 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
+    <a href="https://github.com/matmat202">github.com/matmat202</a>
+  </footer>
+</div>
