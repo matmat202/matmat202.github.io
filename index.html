@@ -124,6 +124,12 @@ h2{
   transition:transform .14s ease;
 }
 .site:hover .go{transform:translateX(3px)}
+/* Today's state of a daily game, read by dailies.js from what the game itself saved.
+   Inside the link, so it is announced as part of the card it describes. */
+.today{margin:2px 0 0;font-size:13px;font-weight:600;color:var(--ink-2)}
+.today[data-state="done"]{color:var(--ink)}
+.today[data-state="done"]::before{content:"\2713\00a0";color:var(--rail)}
+.today-sum{margin:8px 0 0;color:var(--ink-2);font-size:14.5px;font-weight:600}
 .warn{
   margin:0; padding:9px 18px 12px; font-size:13px; color:var(--warn);
   background:var(--card-2); border-top:1px solid var(--line);
@@ -319,7 +325,8 @@ footer a:hover{text-decoration-thickness:2px}
   </main>
 
   <footer>
-    <span>Rebuilt <time datetime="2026-10-27T07:44:33.625371+00:00">27 October 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
+    <span>Rebuilt <time datetime="2026-10-27T07:57:48.123645+00:00">27 October 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
     <a href="https://github.com/matmat202">github.com/matmat202</a>
   </footer>
 </div>
+<script src="dailies.js"></script>
