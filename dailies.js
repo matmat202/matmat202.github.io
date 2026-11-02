@@ -4,7 +4,7 @@
    of them and can read what each game already saved — nothing new is stored, and nothing
    leaves the browser. What each game keeps, read from its own app.js on 2026-10-27:
 
-     which-first / which-country / further-north / which-read-more
+     which-first / which-country / further-north / which-way / which-read-more
          '<p>:<day>'  the picks made so far (an array; 10 is a finished ten)
          '<p>:days'   the days finished, for the streak
      stanford-outlines
@@ -12,7 +12,7 @@
 
    The games do not agree on what "today" is, and the hub has to use each one's own
    answer or it reports a finished game as unplayed:
-     local calendar date  — which-first, which-country, further-north
+     local calendar date  — which-first, which-country, further-north, which-way
      campus date (Pacific) — stanford-outlines
      yesterday in UTC     — which-read-more, whose ten is the last day Wikimedia has
                             published. For a few hours after UTC midnight the game falls
@@ -31,6 +31,7 @@
     { repo: 'which-first', kind: 'picks', prefix: 'wf:', day: 'local' },
     { repo: 'which-country', kind: 'picks', prefix: 'wc:', day: 'local' },
     { repo: 'further-north', kind: 'picks', prefix: 'fn:', day: 'local' },
+    { repo: 'which-way', kind: 'picks', prefix: 'ww:', day: 'local' },
     { repo: 'which-read-more', kind: 'picks', prefix: 'wrm:', day: 'utc-1' },
   ];
   var ROUNDS = 10;
