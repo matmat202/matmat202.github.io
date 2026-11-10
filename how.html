@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>How these sites were made</title>
+<meta name="description" content="An autonomous Claude Code workspace, its rules, and what it produced — every number counted from the repository.">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&display=swap">
+<style>
+/* House tokens copied from projects/hub/template.html so this reads as the same site. */
+:root{
+  --ground:#f5f3ee; --card:#fffefb; --ink:#15171a; --ink-2:#4f565f; --line:#e0ddd5;
+  --gold:#8a5a12; --accent:#2f6f8f;
+  --f-display:"Instrument Serif","Iowan Old Style",Georgia,serif;
+  --f-ui:"Geist","Helvetica Neue",Arial,sans-serif;
+  --pad:clamp(20px,5vw,56px);
+}
+@media (prefers-color-scheme:dark){
+  :root{--ground:#0f1114; --card:#161a1f; --ink:#eceae4; --ink-2:#a9afb6; --line:#262b31;
+        --gold:#e8b45c; --accent:#9cc3d5}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-ui);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:780px;margin:0 auto;padding:28px var(--pad) 64px}
+.back{font-size:14px;color:var(--ink-2);text-decoration:none}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(40px,7vw,64px);
+  line-height:1.02;letter-spacing:-.015em;margin:28px 0 14px}
+h1 i{color:var(--gold)}
+h2{font-family:var(--f-display);font-weight:400;font-size:32px;margin:52px 0 12px}
+.lede{font-size:18px;color:var(--ink-2);max-width:62ch}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:30px}
+@media (min-width:600px){.stats{grid-template-columns:repeat(3,1fr)}}
+.stat{background:var(--card);padding:16px 18px}
+.stat b{display:block;font-family:var(--f-display);font-weight:400;font-size:36px;line-height:1.1}
+.stat span{font-size:14px;color:var(--ink-2)}
+ol.rules{list-style:none;padding:0;margin:0;counter-reset:r}
+ol.rules li{counter-increment:r;border-top:1px solid var(--line);padding:16px 0 4px 44px;position:relative}
+ol.rules li::before{content:counter(r);position:absolute;left:0;top:12px;
+  font-family:var(--f-display);font-size:30px;color:var(--gold)}
+ol.rules h3{margin:0 0 4px;font-size:17px;font-weight:600}
+ol.rules p{margin:0 0 10px;color:var(--ink-2)}
+ul.funnel{list-style:none;padding:0;margin:0 0 18px}
+.lede b{color:var(--ink);font-weight:600}
+ul.funnel li{margin:0 0 14px;color:var(--ink-2)}
+ul.funnel b{color:var(--ink);font-weight:600}
+ul.funnel .bar{display:block;height:10px;border-radius:5px;background:var(--accent);
+  width:calc(var(--w) * 100%);margin-bottom:5px}
+.foot{margin-top:52px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-2)}
+</style>
+<div class="wrap">
+<a class="back" href="./">&larr; all sites</a>
+<h1>How these sites were <i>made</i></h1>
+<p class="lede">Every site here was built by Claude Code running unattended in a workspace I
+set up on my own machine. I wrote the rules it works under; it picks most of its own projects,
+builds them, tests them and keeps a journal. These are the rules, and what came out.</p>
+<div class="stats">
+<div class="stat"><b>32</b><span>public sites</span></div>
+<div class="stat"><b>457</b><span>projects opened</span></div>
+<div class="stat"><b>2,573</b><span>commits</span></div>
+<div class="stat"><b>2,132</b><span>agent sessions</span></div>
+<div class="stat"><b>67,528</b><span>tool calls</span></div>
+<div class="stat"><b>24</b><span>days</span></div>
+</div>
+
+<h2>The rules</h2>
+<p class="lede">A file every session reads before it does anything. These six carry the most
+weight.</p>
+<ol class="rules">
+<li><h3>Read the brief first, write the handoff last.</h3><p>Sessions do not remember each other. Every one starts by printing the current state and ends by writing the single next concrete action, worded so a session with no context can do it. A project with no next action is how work dies.</p></li>
+<li><h3>No review gate, but every promotion is announced.</h3><p>An idea that scores high enough on a written rubric is started at once, without asking. The announcement is the safeguard: the owner kills early rather than approving late.</p></li>
+<li><h3>Writes stay inside the sandbox, and a hook enforces it.</h3><p>Agents run without permission prompts, so a pre-tool hook denies any file write outside the workspace and the agent&#x27;s memory. Installs are project-local, disk has a 20 GB budget, and nothing is deleted that can be moved to trash instead.</p></li>
+<li><h3>Re-publishing is pre-approved; publishing anything new is not.</h3><p>An agent may push an update to a site that already exists, and that site&#x27;s own test gates are the approval, so no gate may be weakened to ship. A new repository, post or message needs an explicit yes for that one act.</p></li>
+<li><h3>Parallel sessions claim work before touching it.</h3><p>Several agents run at once. A claim on a project goes stale when its holder&#x27;s process dies or it goes 90 minutes without a refresh, and a stolen claim is reported.</p></li>
+<li><h3>Done means run, not written.</h3><p>A project is done when it works and has been run. Failures and dead ends go in the journal with the same weight as wins, and no benchmark number is claimed that was not measured on this machine.</p></li>
+</ol>
+
+<h2>Where the ideas went</h2>
+<p class="lede">With nothing assigned, a session thinks up candidates, checks each against
+everything already built here and on the web, and scores the survivors. At least 4 in 10 die at the check, because the thing already exists.</p>
+<ul class="funnel">
+<li><span class="bar" style="--w:1.000"></span><b>5,879</b> ideas written down and checked</li>
+<li><span class="bar" style="--w:0.501"></span><b>2,944</b> closed because they already existed, here or elsewhere</li>
+<li><span class="bar" style="--w:0.061"></span><b>361</b> promoted to a project</li>
+</ul>
+<p class="lede">Of all 457 projects, its own and mine, <b>362</b> are finished and have been run, and <b>57</b> were abandoned — 56 of those with the reason written down, because a dead end recorded is worth more than one left to stall.</p>
+
+<h2>What I ask of it</h2>
+<p class="lede">29 of the projects were mine to assign; the rest it proposed itself.
+Mine always come first, and it drops its own work the moment I ask for something. Everything
+else — 7,125 journal entries since 2026-10-17 — it does on its own.</p>
+
+<script type="application/json" id="counts">{"abandoned": 57, "abandoned_reasoned": 56, "candidates": 5879, "census_at": "2026-11-10", "commissioned": 29, "commits": 2573, "days": 24, "done": 362, "existed": 2944, "first": "2026-10-17", "journal": 7125, "projects": 457, "promoted": 361, "sessions": 2132, "sites": 32, "tool_calls": 67528}</script>
+<p class="foot">Counted from the repository on 2026-11-10: projects, commits and the journal from
+git and the state file; sessions from the transcript census of 2026-11-10 (this workspace only; tool calls are
+machine-wide, which adds a handful of other sessions).
+The ideas count is a lower bound — only verdicts that say so in words are counted as
+"already existed".</p>
+</div>
+</html>
