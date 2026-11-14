@@ -180,6 +180,19 @@ h1 i{color:var(--gold);font-style:italic}
 .now .v b{font-weight:600}
 .now .at{color:var(--ink-3);font-size:13px}
 
+/* --- Find a site (find.js) --------------------------------------------------- */
+.find{margin:0 0 18px}
+.find label{display:block;margin:0 0 6px;font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.find input{
+  width:100%;max-width:420px;font:inherit;font-size:16px;color:var(--ink);
+  background:var(--card);border:1px solid var(--line-2);border-radius:12px;padding:11px 14px;
+}
+.find input::placeholder{color:var(--ink-3);opacity:1}
+.find input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.find p{margin:8px 0 0;font-size:14px;color:var(--ink-2)}
+.find p:empty{display:none}
+.site[hidden]{display:none}
+
 /* --- the shelf ---------------------------------------------------------------- */
 .shelf{list-style:none;margin:0;padding:0;display:grid;gap:14px}
 @media (min-width:640px){ .shelf{grid-template-columns:1fr 1fr} }
@@ -323,6 +336,12 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
         <li id="t-sun" hidden><a><span class="k">Sun</span><span class="v"></span></a></li>
       </ul>
     </section>
+
+    <form class="find" id="find" role="search" hidden>
+      <label for="find-q">Find a site</label>
+      <input id="find-q" type="search" name="q" placeholder="tide, dining, daily game&hellip;" autocomplete="off" spellcheck="false" enterkeyhint="search">
+      <p id="find-status" aria-live="polite"></p>
+    </form>
 
     <ul class="shelf">
       <li class="site" style="--site:#6b7280;--site-dark:#9ca3af">
@@ -605,12 +624,13 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
   </section>
 
   <footer>
-    <span>Rebuilt <time datetime="2026-11-13T04:25:34.219189+00:00">13 November 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
+    <span>Rebuilt <time datetime="2026-11-14T09:00:28.194971+00:00">14 November 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
     <a href="https://github.com/matmat202">github.com/matmat202</a>
   </footer>
 </div>
 <script src="dailies.js"></script>
 <script src="today.js"></script>
+<script src="find.js"></script>
 <script>
 /* The hero graph: one node per card on the shelf, coloured with that card's own accent,
    joined to its nearest neighbours. Decorative (aria-hidden), so it may fail silently.
