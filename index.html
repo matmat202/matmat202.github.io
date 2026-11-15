@@ -170,6 +170,13 @@ kbd{
   background:var(--ink);color:var(--ground);vertical-align:1px;
 }
 
+.byline{display:flex;align-items:center;gap:18px;margin:0 0 22px}
+.byline .eyebrow{margin:0}
+.portrait{
+  flex:none;width:96px;height:96px;border-radius:24px;object-fit:cover;display:block;
+  background:#a8005a;box-shadow:0 0 0 1px var(--line),var(--shadow);
+}
+@media (max-width:520px){ .byline{gap:14px} .portrait{width:72px;height:72px;border-radius:18px} }
 .eyebrow{
   margin:0 0 18px;font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
   color:var(--ink-2);
@@ -399,7 +406,10 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
 
   <section class="hero" aria-labelledby="name">
     <div>
-      <p class="eyebrow rise">Stanford &middot; Class of 2029 &middot; Monterrey, Mexico</p>
+      <div class="byline rise">
+        <img class="portrait" src="icons/portrait-192.jpg" srcset="icons/portrait-192.jpg 1x, icons/portrait-384.jpg 2x" width="96" height="96" alt="Mateo Lopez Elizondo">
+        <p class="eyebrow">Stanford &middot; Class of 2029 &middot; Monterrey, Mexico</p>
+      </div>
       <h1 id="name" class="rise">Mateo Lopez <i>Elizondo</i></h1>
       <p class="lede rise">I&rsquo;m a sophomore at Stanford studying mathematics and management science &amp; engineering, and I&rsquo;ve been a systems person for as long as I can remember &mdash; the kind who would rather understand how the whole thing fits together than optimise one corner of it.</p>
       <p class="lede rise">That&rsquo;s what most of these projects are: real systems, modeled. Some of them came out of competition maths, some out of consulting work in Mexico City, and a few out of plain stubbornness about a question nobody had bothered to answer.</p>
@@ -521,7 +531,7 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
       <li class="site" style="--site:#2f7d6d;--site-dark:#4fb3a0">
         <a class="hit" href="https://matmat202.github.io/crypto-lifetimes/">
           <h2>Crypto Lifetimes: when every cipher, hash and protocol was born, cracked and retired</h2>
-          <p class="blurb">29 ciphers, hashes, key exchanges and protocols from 1976 to today: when each was published, first weakened, practically broken and retired, every date quoted from its source.</p>
+          <p class="blurb">30 ciphers, hashes, key exchanges and protocols from 1976 to today: when each was published, first weakened, practically broken and retired, every date quoted from its source.</p>
           <p class="where"><span class="host">matmat202.github.io/crypto-lifetimes</span><span class="go" aria-hidden="true">&rarr;</span></p>
         </a>
         
@@ -790,7 +800,7 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
   </section>
 
   <footer>
-    <span>Rebuilt <time datetime="2026-11-15T00:25:03.175401+00:00">15 November 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
+    <span>Rebuilt <time datetime="2026-11-15T23:10:35.353705+00:00">15 November 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
     <a href="https://github.com/matmat202">github.com/matmat202</a>
   </footer>
 </div>
