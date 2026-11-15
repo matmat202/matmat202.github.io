@@ -154,7 +154,9 @@
     var sum = doc.createElement('p');
     sum.className = 'today-sum';
     sum.textContent = summary(shown);
-    var sub = doc.querySelector('header .sub');
+    // The shelf's own header: the simulations section above it has a header with a .sub
+    // too, and the bare 'header .sub' put the games tally under the physics (2026-11-15).
+    var sub = doc.querySelector('#work header .sub');
     if (sub) sub.after(sum);
     return shown;
   }

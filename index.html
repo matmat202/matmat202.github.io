@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Mateo Lopez Elizondo</title>
-<meta name="description" content="Mateo Lopez Elizondo — Stanford sophomore in mathematics and management science & engineering. Real systems, modeled: everything he has built and published.">
+<meta name="description" content="Mateo Lopez Elizondo — Stanford sophomore in mathematics and management science & engineering, looking for summer 2027 quant, SWE and AI research internships. Real systems, modeled: live physics simulations and everything he has built and published.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2315171a'/%3E%3Ccircle cx='10' cy='11' r='3' fill='%23fff'/%3E%3Ccircle cx='22' cy='9' r='2.4' fill='%23fff'/%3E%3Ccircle cx='17' cy='22' r='3.4' fill='%23e8a33d'/%3E%3Cpath d='M10 11 22 9 17 22Z' fill='none' stroke='%23fff' stroke-width='1.4' opacity='.7'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
@@ -214,6 +214,45 @@ h1 i{color:var(--gold);font-style:italic}
 .find p:empty{display:none}
 .site[hidden]{display:none}
 
+/* --- simulations (sims.js) ------------------------------------------------------ */
+.lab{margin:0 0 clamp(56px,9vw,104px)}
+.tabs{display:flex;gap:6px;margin:0 0 14px;flex-wrap:wrap}
+.tabs button,.controls button,.presets button{
+  font:inherit;font-size:14px;font-weight:500;color:var(--ink-2);cursor:pointer;
+  background:var(--card);border:1px solid var(--line-2);border-radius:999px;padding:8px 15px;
+  transition:background-color .15s ease,color .15s ease,border-color .15s ease;
+}
+.tabs button:hover,.controls button:hover,.presets button:hover{border-color:var(--ink-2);color:var(--ink)}
+.tabs button[aria-selected="true"],.presets button[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.tabs button:focus-visible,.controls button:focus-visible,.presets button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lab-grid{display:grid;gap:18px}
+@media (min-width:880px){ .lab-grid{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);align-items:start} }
+.stage{
+  position:relative;aspect-ratio:16/10;border-radius:20px;overflow:hidden;
+  background:var(--card-2);border:1px solid var(--line);box-shadow:var(--shadow);
+}
+@media (max-width:639px){ .stage{aspect-ratio:4/5} }
+.stage:fullscreen{aspect-ratio:auto;border-radius:0;border:0}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+.hud{
+  position:absolute;left:10px;bottom:10px;margin:0;padding:4px 9px;border-radius:8px;
+  background:var(--card);color:var(--ink-2);font-size:12px;font-variant-numeric:tabular-nums;
+  border:1px solid var(--line);pointer-events:none;max-width:calc(100% - 20px);
+}
+.hud:empty{display:none}
+.nojs{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:var(--ink-2)}
+.lab-side h3{font-family:var(--f-display);font-weight:400;font-size:28px;line-height:1.1;margin:0 0 10px}
+.lab-side p{margin:0 0 12px;font-size:15px;color:var(--ink-2);line-height:1.55}
+.lab-side .eq{
+  font-family:var(--f-display);font-size:19px;color:var(--ink);background:var(--card);
+  border:1px solid var(--line);border-radius:12px;padding:10px 14px;overflow-x:auto;white-space:nowrap;
+}
+.lab-side .eq var{font-style:italic}
+.lab-side .how{color:var(--ink)}
+.presets,.controls{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.controls{margin-top:6px;padding-top:14px;border-top:1px solid var(--line)}
+.lab:not(.live) .controls,.lab:not(.live) .presets{display:none}
+
 /* --- the shelf ---------------------------------------------------------------- */
 .shelf{list-style:none;margin:0;padding:0;display:grid;gap:14px}
 @media (min-width:640px){ .shelf{grid-template-columns:1fr 1fr} }
@@ -309,6 +348,7 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
   <div class="bar">
     <a class="mark" href="/" aria-label="Mateo Lopez Elizondo, home">M<i>.</i>L<i>.</i>E</a>
     <nav aria-label="Sections">
+      <a href="#sims">Simulations</a>
       <a href="#work">Work</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -341,6 +381,63 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
     <li><b>Alvarez &amp; Marsal</b><span>Performance Improvement, Mexico City, 2026</span></li>
     <li><b>Red-Horse Lab</b><span>Research, Stanford, 2026</span></li>
   </ul>
+
+  <section class="lab" id="sims" aria-labelledby="sims-h">
+    <header class="shelf-head">
+      <div>
+        <p class="kicker">Simulations</p>
+        <h2 id="sims-h">Physics you can <i>touch.</i></h2>
+      </div>
+      <p class="sub">Three systems, solved live in your browser at 60 frames a second &mdash; plain JavaScript on typed arrays, no libraries, no server. Drag on the stage to interact.</p>
+    </header>
+    <div class="tabs" role="tablist" aria-label="Simulation">
+      <button type="button" role="tab" id="tab-fluid" aria-controls="sim-stage" data-sim="fluid" aria-selected="true">Fluid</button>
+      <button type="button" role="tab" id="tab-orbits" aria-controls="sim-stage" data-sim="orbits" aria-selected="false" tabindex="-1">Orbits</button>
+      <button type="button" role="tab" id="tab-patterns" aria-controls="sim-stage" data-sim="patterns" aria-selected="false" tabindex="-1">Patterns</button>
+    </div>
+    <div class="lab-grid">
+      <div class="stage" id="sim-stage" role="tabpanel">
+        <canvas id="sim" role="img"
+          data-label-fluid="Fluid simulation: drag to stir the fluid and drop coloured dye"
+          data-label-orbits="Orbit simulation: drag back and release to launch a planet"
+          data-label-patterns="Reaction-diffusion simulation: drag to seed a pattern"
+          aria-label="Fluid simulation: drag to stir the fluid and drop coloured dye"></canvas>
+        <p class="hud" id="sim-hud" aria-hidden="true"></p>
+        <noscript><p class="nojs">The simulations need JavaScript.</p></noscript>
+      </div>
+      <div class="lab-side">
+        <div data-for="fluid">
+          <h3>Incompressible fluid</h3>
+          <p>Navier&ndash;Stokes on a grid, the &ldquo;stable fluids&rdquo; method: each step carries velocity and dye backwards along the flow, then solves a Poisson equation for pressure so the flow stays divergence-free. Vorticity confinement puts back the small eddies the grid would smear out.</p>
+          <p class="eq">&part;<var>u</var>/&part;<var>t</var> = &minus;(<var>u</var>&middot;&nabla;)<var>u</var> &minus; &nabla;<var>p</var> + <var>f</var>, &nbsp; &nabla;&middot;<var>u</var> = 0</p>
+          <p class="how"><b>Drag</b> to push the fluid and drop dye. Leave it alone and a phantom spoon keeps stirring.</p>
+        </div>
+        <div data-for="orbits" hidden>
+          <h3>N-body gravity</h3>
+          <p>Every body pulls on every other. The integrator is a kick&ndash;drift&ndash;kick leapfrog, which is <em>symplectic</em>: the energy readout wobbles but does not creep, so orbits do not spiral in or out over time the way they do with a naive method. Bodies that touch merge, conserving momentum.</p>
+          <p class="eq"><var>a</var><sub><var>i</var></sub> = &Sigma;<sub><var>j</var></sub> <var>G</var><var>m</var><sub><var>j</var></sub>(<var>r</var><sub><var>j</var></sub> &minus; <var>r</var><sub><var>i</var></sub>) / |<var>r</var><sub><var>j</var></sub> &minus; <var>r</var><sub><var>i</var></sub>|<sup>3</sup></p>
+          <p class="how"><b>Drag back and let go</b> to launch a planet, slingshot-style. The dotted line is its predicted path, computed by running the whole system forward.</p>
+        </div>
+        <div data-for="patterns" hidden>
+          <h3>Reaction&ndash;diffusion</h3>
+          <p>Gray&ndash;Scott: two chemicals diffuse at different rates while one feeds on the other. That imbalance alone is enough to make spots, stripes and coral &mdash; the mechanism Turing proposed for animal markings.</p>
+          <p class="eq">&part;<var>v</var>/&part;<var>t</var> = <var>D</var><sub><var>v</var></sub>&nabla;<sup>2</sup><var>v</var> + <var>u</var><var>v</var><sup>2</sup> &minus; (<var>F</var>+<var>k</var>)<var>v</var></p>
+          <p class="how"><b>Drag</b> to seed it. Each preset is a different point (<var>F</var>, <var>k</var>) on Pearson&rsquo;s map.</p>
+          <div class="presets" role="group" aria-label="Pattern preset">
+            <button type="button" data-preset="coral" aria-pressed="true">Coral</button>
+            <button type="button" data-preset="mitosis" aria-pressed="false">Mitosis</button>
+            <button type="button" data-preset="worms" aria-pressed="false">Worms</button>
+            <button type="button" data-preset="spots" aria-pressed="false">Spots</button>
+          </div>
+        </div>
+        <div class="controls">
+          <button type="button" id="sim-play" aria-pressed="false">Pause</button>
+          <button type="button" id="sim-reset">Reset</button>
+          <button type="button" id="sim-full">Full screen</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <main id="work">
     <header class="shelf-head">
@@ -650,7 +747,7 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
   </section>
 
   <footer>
-    <span>Rebuilt <time datetime="2026-11-15T00:08:06.894420+00:00">15 November 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
+    <span>Rebuilt <time datetime="2026-11-15T00:19:02.276461+00:00">15 November 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
     <a href="https://github.com/matmat202">github.com/matmat202</a>
   </footer>
 </div>
@@ -658,3 +755,4 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
 <script src="today.js"></script>
 <script src="find.js"></script>
 <script src="graph.js"></script>
+<script src="sims.js"></script>
