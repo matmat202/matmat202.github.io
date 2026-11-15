@@ -10,7 +10,7 @@
 <meta property="og:type" content="profile">
 <meta property="og:url" content="https://matmat202.github.io/">
 <meta property="og:title" content="Mateo Lopez Elizondo">
-<meta property="og:description" content="Stanford mathematics and MS&amp;E. Real systems, modeled — campus tools, games and investigations, each one a working page.">
+<meta property="og:description" content="Stanford mathematics and MS&amp;E, looking for summer 2027 quant, SWE and AI research internships. Real systems, modeled — campus tools, games, simulations and investigations, each one a working page.">
 <meta property="og:image" content="https://matmat202.github.io/icons/card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -101,14 +101,35 @@ a{color:inherit}
   border:1px solid var(--line);
   overflow:hidden;
 }
-@media (max-width:879px){ .graph{aspect-ratio:16/10;max-height:280px} }
+@media (max-width:879px){ .graph{aspect-ratio:1/1;max-height:400px} }
 .graph canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .graph figcaption{
   position:absolute;left:16px;bottom:13px;right:16px;
-  font-size:12.5px;color:var(--ink-3);letter-spacing:.01em;
-  display:flex;gap:8px;align-items:center;
+  font-size:12.5px;color:var(--ink-3);letter-spacing:.01em;pointer-events:none;
 }
-.graph figcaption::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.graph figcaption::before{content:"";display:inline-block;width:6px;height:6px;margin-right:8px;border-radius:50%;background:var(--gold);vertical-align:1px}
+.graph .tip{
+  position:absolute;left:0;top:0;z-index:2;max-width:min(300px,calc(100% - 16px));
+  padding:10px 12px;border-radius:12px;background:var(--card);color:var(--ink);
+  border:1px solid var(--line-2);box-shadow:var(--shadow);font-size:13px;line-height:1.4;
+  pointer-events:none;
+}
+.graph .tip strong{display:block;font-size:14px;margin-bottom:4px}
+.graph .tip ul{margin:0;padding:0;list-style:none}
+.graph .tip li{padding:2px 0;color:var(--ink-2)}
+.graph .tip li b{font-weight:500;color:var(--ink)}
+.graph .tip li span{color:var(--ink-3);font-size:12px}
+.graph .tip p{margin:0;color:var(--ink-2)}
+.graph .tip em{display:block;margin-top:6px;font-style:normal;font-weight:600;color:var(--ink-2);font-size:12px}
+.graph .hint{display:none}
+.graph.live .hint{display:inline}
+.graph.live canvas{touch-action:none}
+.seeking{margin:18px 0 0;font-size:15.5px;font-weight:500;color:var(--ink)}
+.seeking span{
+  display:inline-block;margin-right:8px;padding:2px 9px;border-radius:999px;
+  font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  background:var(--ink);color:var(--ground);vertical-align:1px;
+}
 
 .eyebrow{
   margin:0 0 18px;font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
@@ -219,6 +240,9 @@ h1 i{color:var(--gold);font-style:italic}
 .site:hover{border-color:var(--line-2);transform:translateY(-2px)}
 .site:hover::before{opacity:1}
 .site:has(.hit:focus-visible){border-color:var(--rail)}
+/* lit by the hero graph: its node is under the pointer */
+.site.lit{border-color:var(--rail);transform:translateY(-2px)}
+.site.lit::before{opacity:1}
 .hit{
   position:relative;display:flex;flex-direction:column;gap:8px;flex:1;
   padding:20px 20px 16px;text-decoration:none;color:inherit;outline:none;
@@ -296,6 +320,7 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
       <h1 id="name" class="rise">Mateo Lopez <i>Elizondo</i></h1>
       <p class="lede rise">I&rsquo;m a sophomore at Stanford studying mathematics and management science &amp; engineering, and I&rsquo;ve been a systems person for as long as I can remember &mdash; the kind who would rather understand how the whole thing fits together than optimise one corner of it.</p>
       <p class="lede rise">That&rsquo;s what most of these projects are: real systems, modeled. Some of them came out of competition maths, some out of consulting work in Mexico City, and a few out of plain stubbornness about a question nobody had bothered to answer.</p>
+      <p class="seeking rise"><span>Looking for</span> Summer 2027 internships in quant, software engineering and AI research.</p>
       <ul class="links rise">
         <li><a class="primary" href="mailto:matlo202@stanford.edu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg>Email</a></li>
         <li><a href="https://github.com/matmat202"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>GitHub</a></li>
@@ -305,7 +330,8 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
     </div>
     <figure class="graph" aria-hidden="true">
       <canvas id="graph"></canvas>
-      <figcaption>Every site below, as a system &mdash; one node each, in its own colour</figcaption>
+      <div class="tip" id="graph-tip" hidden></div>
+      <figcaption>Every site below, linked to the ones it is most alike &mdash; <span class="hint">hover to read, drag to pull, click to open</span></figcaption>
     </figure>
   </section>
 
@@ -624,82 +650,11 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
   </section>
 
   <footer>
-    <span>Rebuilt <time datetime="2026-11-14T09:00:28.194971+00:00">14 November 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
+    <span>Rebuilt <time datetime="2026-11-15T00:08:06.894420+00:00">15 November 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
     <a href="https://github.com/matmat202">github.com/matmat202</a>
   </footer>
 </div>
 <script src="dailies.js"></script>
 <script src="today.js"></script>
 <script src="find.js"></script>
-<script>
-/* The hero graph: one node per card on the shelf, coloured with that card's own accent,
-   joined to its nearest neighbours. Decorative (aria-hidden), so it may fail silently.
-   Still frame under reduced motion; paused while off screen or in a hidden tab. */
-(function () {
-  var cv = document.getElementById('graph');
-  if (!cv || !cv.getContext) return;
-  var ctx = cv.getContext('2d');
-  var dark = matchMedia('(prefers-color-scheme: dark)');
-  var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var cards = [].slice.call(document.querySelectorAll('.shelf .site'));
-  var cols = cards.map(function (li) {
-    return { l: li.style.getPropertyValue('--site').trim() || '#6b7280',
-             d: li.style.getPropertyValue('--site-dark').trim() || '#9aa3ad' };
-  });
-  if (!cols.length) return;
-  // Deterministic layout: the same shelf draws the same picture.
-  var seed = 7; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
-  var nodes = cols.map(function (c, i) {
-    var a = i * 2.39996, r = Math.sqrt((i + .5) / cols.length) * .42;   // sunflower spiral
-    return { x: .5 + r * Math.cos(a), y: .5 + r * Math.sin(a), c: c,
-             p: rnd() * 6.28, s: .6 + rnd() * .8, z: 2.2 + rnd() * 2.6 };
-  });
-  var W = 0, H = 0, dpr = 1;
-  function size() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = cv.clientWidth; H = cv.clientHeight;
-    cv.width = W * dpr; cv.height = H * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  function pos(n, t) {
-    var cy = (H - 34) / 2, mm = Math.min(W, H - 46);
-    return [W / 2 + (n.x - .5) * mm * 1.08 + Math.sin(t * .00023 * n.s + n.p) * 7,
-            cy + (n.y - .5) * mm * 1.0 + Math.cos(t * .00019 * n.s + n.p) * 7];
-  }
-  function draw(t) {
-    var dk = dark.matches;
-    ctx.clearRect(0, 0, W, H);
-    var P = nodes.map(function (n) { return pos(n, t); });
-    var lim = Math.min(W, H) * .26;
-    ctx.lineWidth = 1;
-    for (var i = 0; i < P.length; i++) for (var j = i + 1; j < P.length; j++) {
-      var dx = P[i][0] - P[j][0], dy = P[i][1] - P[j][1], d = Math.sqrt(dx * dx + dy * dy);
-      if (d > lim) continue;
-      ctx.globalAlpha = (1 - d / lim) * (dk ? .38 : .32);
-      ctx.strokeStyle = dk ? '#cfd3d8' : '#3b4048';
-      ctx.beginPath(); ctx.moveTo(P[i][0], P[i][1]); ctx.lineTo(P[j][0], P[j][1]); ctx.stroke();
-    }
-    for (var k = 0; k < P.length; k++) {
-      var n = nodes[k], col = dk ? n.c.d : n.c.l, pulse = still ? 0 : Math.sin(t * .0012 + n.p) * .6;
-      ctx.globalAlpha = .16; ctx.fillStyle = col;
-      ctx.beginPath(); ctx.arc(P[k][0], P[k][1], n.z * 3.2 + pulse * 2, 0, 6.2832); ctx.fill();
-      ctx.globalAlpha = 1;
-      ctx.beginPath(); ctx.arc(P[k][0], P[k][1], n.z + pulse * .4, 0, 6.2832); ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-  }
-  var on = true, raf = 0;
-  function loop(t) { draw(t); if (on && !still) raf = requestAnimationFrame(loop); }
-  function start() { cancelAnimationFrame(raf); raf = requestAnimationFrame(loop); }
-  size(); draw(0);
-  if (!still) {
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) {
-      on = e[0].isIntersecting && !document.hidden; if (on) start();
-    }).observe(cv);
-    document.addEventListener('visibilitychange', function () { on = !document.hidden; if (on) start(); });
-    start();
-  }
-  addEventListener('resize', function () { size(); draw(performance.now()); });
-  if (dark.addEventListener) dark.addEventListener('change', function () { draw(performance.now()); });
-})();
-</script>
+<script src="graph.js"></script>
