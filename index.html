@@ -300,6 +300,19 @@ h1 i{color:var(--gold);font-style:italic}
 .lab:not(.live) .controls,.lab:not(.live) .presets{display:none}
 
 /* --- the shelf ---------------------------------------------------------------- */
+/* Three runs of cards (build.py GROUPS), with a jump row on top: on a phone the shelf
+   is ~8 screens, and a reader after "something on campus" should not scroll the lot. */
+.groups{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
+.groups a{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border:1px solid var(--line-2);
+  border-radius:999px;color:var(--ink);text-decoration:none;font-size:14px;background:var(--card)}
+.groups a:hover{border-color:var(--ink)}
+.groups .n{color:var(--ink-2);font-variant-numeric:tabular-nums}
+.group{scroll-margin-top:84px}
+.group+.group{margin-top:38px}
+.group-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;margin:0 0 14px}
+.group-h h2{font-family:var(--f-display);font-weight:400;font-size:30px;letter-spacing:-.01em;margin:0}
+.group-h p{margin:0;color:var(--ink-2);font-size:14px}
+.group[hidden],.groups[hidden]{display:none}
 .shelf{list-style:none;margin:0;padding:0;display:grid;gap:14px}
 @media (min-width:640px){ .shelf{grid-template-columns:1fr 1fr} }
 @media (min-width:980px){ .shelf{grid-template-columns:1fr 1fr 1fr} }
@@ -519,60 +532,15 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
       <p id="find-status" aria-live="polite"></p>
     </form>
 
-    <ul class="shelf">
-      <li class="site" style="--site:#6b7280;--site-dark:#9ca3af">
-        <a class="hit" href="https://matmat202.github.io/anyone-here-have-flu/">
-          <h2>Anyone here have flu?</h2>
-          <p class="blurb">The odds that someone in a room of N people in California is contagious with flu this week, from CDC surveillance data. Guess first.</p>
-          <p class="where"><span class="host">matmat202.github.io/anyone-here-have-flu</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
-      <li class="site" style="--site:#2f7d6d;--site-dark:#4fb3a0">
-        <a class="hit" href="https://matmat202.github.io/crypto-lifetimes/">
-          <h2>Crypto Lifetimes: when every cipher, hash and protocol was born, cracked and retired</h2>
-          <p class="blurb">30 ciphers, hashes, key exchanges and protocols from 1976 to today: when each was published, first weakened, practically broken and retired, every date quoted from its source.</p>
-          <p class="where"><span class="host">matmat202.github.io/crypto-lifetimes</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
-      <li class="site" style="--site:#9a5800;--site-dark:#f2b552">
-        <a class="hit" href="https://matmat202.github.io/daylight/">
-          <h2>Daylight · sunrise, sunset and day length for any town</h2>
-          <p class="blurb">Sunrise, sunset and day length for any town of 15,000+ people, on any day, in the town&#x27;s own time zone, with the whole year as a chart. Compare two towns.</p>
-          <p class="where"><span class="host">matmat202.github.io/daylight</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
-      <li class="site" style="--site:#a8352a;--site-dark:#ff8f7f">
-        <a class="hit" href="https://matmat202.github.io/for-the-date/">
-          <h2>For the Date · is today warm or cold for the date where you are?</h2>
-          <p class="blurb">Is today warm or cold, wet or dry, for the date? The forecast for any town of 15,000+ people, against the same days of the calendar in each of the 30 years 1991-2020.</p>
-          <p class="where"><span class="host">matmat202.github.io/for-the-date</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
+    <nav class="groups" aria-label="Kinds of site"><a href="#g-campus">On campus <span class="n">9</span></a><a href="#g-daily">New every day <span class="n">9</span></a><a href="#g-everywhere">Everywhere <span class="n">15</span></a></nav>
+    <section class="group" id="g-campus" aria-labelledby="g-campus-h">
+      <div class="group-h"><h2 id="g-campus-h">On campus</h2><p>Stanford, read from its own schedules, menus and archives</p></div>
+      <ul class="shelf">
       <li class="site" style="--site:#8c1515;--site-dark:#e36a63">
         <a class="hit" href="https://matmat202.github.io/free-rooms/">
           <h2>Free classrooms · Stanford</h2>
           <p class="blurb">Which Stanford lecture rooms are empty right now and for how long, from the class schedule. Built for phones.</p>
           <p class="where"><span class="host">matmat202.github.io/free-rooms</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
-      <li class="site" style="--site:#0d6680;--site-dark:#6cc4e0">
-        <a class="hit" href="https://matmat202.github.io/further-north/">
-          <h2>Further North · which city is further north?</h2>
-          <p class="blurb">Two world cities: which one is further north? Ten a day, from easy to a hair&#x27;s breadth, with the answer on a map. Rome or New York?</p>
-          <p class="where"><span class="host">matmat202.github.io/further-north</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
-      <li class="site" style="--site:#0b6e74;--site-dark:#5cc8cf">
-        <a class="hit" href="https://matmat202.github.io/how-far/">
-          <h2>How Far? · the distance, direction and time difference between any two towns</h2>
-          <p class="blurb">How far apart are two towns? The distance as the crow flies, which way to set off, the halfway point, the time difference and a rough flight time, with the route on a world map.</p>
-          <p class="where"><span class="host">matmat202.github.io/how-far</span><span class="go" aria-hidden="true">&rarr;</span></p>
         </a>
         
       </li>
@@ -584,51 +552,11 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
         </a>
         
       </li>
-      <li class="site" style="--site:#2a5d8f;--site-dark:#8db8e6">
-        <a class="hit" href="https://matmat202.github.io/fog-decades/">
-          <h2>Is the Bay&#x27;s summer fog disappearing?</h2>
-          <p class="blurb">Every summer day at SFO and Oakland since 1948, read from NOAA&#x27;s hourly airport observations.</p>
-          <p class="where"><span class="host">matmat202.github.io/fog-decades</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
-      <li class="site" style="--site:#6b7280;--site-dark:#9ca3af">
-        <a class="hit" href="https://matmat202.github.io/kin-of-the-day/">
-          <h2>Kin of the Day · one species, and when you last shared an ancestor</h2>
-          <p class="blurb">Every day one species from across the tree of life, drawn as its branch back to the ancestor it shares with you, dated by TimeTree.</p>
-          <p class="where"><span class="host">matmat202.github.io/kin-of-the-day</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
-      <li class="site" style="--site:#5b3fa8;--site-dark:#b9a6f0">
-        <a class="hit" href="https://matmat202.github.io/name-years/">
-          <h2>Name Years · every US first name, every year since 1880</h2>
-          <p class="blurb">Type a first name and see how many US babies were given it every year since 1880, when it peaked, its rank today, when half of everyone with it was born, and how old the ones alive now are. From Social Security records.</p>
-          <p class="where"><span class="host">matmat202.github.io/name-years</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
       <li class="site" style="--site:#8c1515;--site-dark:#e36a63">
         <a class="hit" href="https://matmat202.github.io/paper-of-the-year/">
           <h2>Paper of the Year · Stanford&#x27;s most-cited paper, every year since 1900</h2>
           <p class="blurb">Stanford&#x27;s most-cited paper for every year since 1900, from OpenAlex: Hotelling, Bandura, the bootstrap, Diffie–Hellman, PageRank, ImageNet.</p>
           <p class="where"><span class="host">matmat202.github.io/paper-of-the-year</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
-      <li class="site" style="--site:#6b7280;--site-dark:#9ca3af">
-        <a class="hit" href="https://matmat202.github.io/same-until-the-lamp/">
-          <h2>Same Until the Lamp</h2>
-          <p class="blurb">Two colours that match in daylight and come apart under a warm bulb. A new pair every day.</p>
-          <p class="where"><span class="host">matmat202.github.io/same-until-the-lamp</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
-      <li class="site" style="--site:#a8321a;--site-dark:#ff9a7a">
-        <a class="hit" href="https://matmat202.github.io/shaken/">
-          <h2>Shaken · the world&#x27;s earthquakes, and the biggest near you</h2>
-          <p class="blurb">Every magnitude 2.5+ earthquake in the past day, week or month, live from USGS, on a world map. Type your town to see the biggest ones near you.</p>
-          <p class="where"><span class="host">matmat202.github.io/shaken</span><span class="go" aria-hidden="true">&rarr;</span></p>
         </a>
         
       </li>
@@ -657,14 +585,6 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
         
       </li>
       <li class="site" style="--site:#8c1515;--site-dark:#e36a63">
-        <a class="hit" href="https://matmat202.github.io/stanford-outlines/">
-          <h2>Stanford Outlines · name the building</h2>
-          <p class="blurb">Ten Stanford buildings a day, drawn as their real OpenStreetMap footprints. Name each one from its outline.</p>
-          <p class="where"><span class="host">matmat202.github.io/stanford-outlines</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
-      <li class="site" style="--site:#8c1515;--site-dark:#e36a63">
         <a class="hit" href="https://matmat202.github.io/stanford-roots/">
           <h2>Stanford Roots · where Stanford&#x27;s people were born</h2>
           <p class="blurb">A world map of where 5,000+ Stanford-educated people, and 1,700+ who worked there, were born, from Wikidata. Pick a country, or type your hometown, and meet everyone from it.</p>
@@ -680,22 +600,6 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
         </a>
         
       </li>
-      <li class="site" style="--site:#1f63b5;--site-dark:#7fb0f0">
-        <a class="hit" href="https://matmat202.github.io/still-unnamed/">
-          <h2>Still Unnamed · the human genes known only by a placeholder</h2>
-          <p class="blurb">How many human protein-coding genes were known only by a placeholder symbol (C1orf, FAM, KIAA) each year since 1986, rebuilt from the HGNC gene-name database and checked against HGNC&#x27;s own published counts.</p>
-          <p class="where"><span class="host">matmat202.github.io/still-unnamed</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
-      <li class="site" style="--site:#6b7280;--site-dark:#9ca3af">
-        <a class="hit" href="https://matmat202.github.io/tide-table/">
-          <h2>Tide Table</h2>
-          <p class="blurb">The next high and low tide at any of NOAA&#x27;s 3,502 prediction stations, with the day&#x27;s curve, in the station&#x27;s own local time.</p>
-          <p class="where"><span class="host">matmat202.github.io/tide-table</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
       <li class="site" style="--site:#6b7280;--site-dark:#9ca3af">
         <a class="hit" href="https://matmat202.github.io/dish-greens/">
           <h2>When does the Dish turn green?</h2>
@@ -704,19 +608,40 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
         </a>
         
       </li>
-      <li class="site" style="--site:#5040b8;--site-dark:#a99cff">
-        <a class="hit" href="https://matmat202.github.io/when-works/">
-          <h2>When Works? · the hours when everyone is awake, across time zones</h2>
-          <p class="blurb">Pick a few towns anywhere and a day: see the hours when everyone is at work or at least awake, hour by hour in each town&#x27;s own time, and which clock changes are about to move the gap.</p>
-          <p class="where"><span class="host">matmat202.github.io/when-works</span><span class="go" aria-hidden="true">&rarr;</span></p>
+      </ul>
+    </section>
+    <section class="group" id="g-daily" aria-labelledby="g-daily-h">
+      <div class="group-h"><h2 id="g-daily-h">New every day</h2><p>a fresh ten, a pair or a pick, each day</p></div>
+      <ul class="shelf">
+      <li class="site" style="--site:#0d6680;--site-dark:#6cc4e0">
+        <a class="hit" href="https://matmat202.github.io/further-north/">
+          <h2>Further North · which city is further north?</h2>
+          <p class="blurb">Two world cities: which one is further north? Ten a day, from easy to a hair&#x27;s breadth, with the answer on a map. Rome or New York?</p>
+          <p class="where"><span class="host">matmat202.github.io/further-north</span><span class="go" aria-hidden="true">&rarr;</span></p>
         </a>
         
       </li>
-      <li class="site" style="--site:#b45309;--site-dark:#e8921f">
-        <a class="hit" href="https://matmat202.github.io/where-did-i-park/">
-          <h2>Where Did I Park</h2>
-          <p class="blurb">Infers where you parked from your speed and position, and points you back. Nothing leaves your phone.</p>
-          <p class="where"><span class="host">matmat202.github.io/where-did-i-park</span><span class="go" aria-hidden="true">&rarr;</span></p>
+      <li class="site" style="--site:#6b7280;--site-dark:#9ca3af">
+        <a class="hit" href="https://matmat202.github.io/kin-of-the-day/">
+          <h2>Kin of the Day · one species, and when you last shared an ancestor</h2>
+          <p class="blurb">Every day one species from across the tree of life, drawn as its branch back to the ancestor it shares with you, dated by TimeTree.</p>
+          <p class="where"><span class="host">matmat202.github.io/kin-of-the-day</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#6b7280;--site-dark:#9ca3af">
+        <a class="hit" href="https://matmat202.github.io/same-until-the-lamp/">
+          <h2>Same Until the Lamp</h2>
+          <p class="blurb">Two colours that match in daylight and come apart under a warm bulb. A new pair every day.</p>
+          <p class="where"><span class="host">matmat202.github.io/same-until-the-lamp</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#8c1515;--site-dark:#e36a63">
+        <a class="hit" href="https://matmat202.github.io/stanford-outlines/">
+          <h2>Stanford Outlines · name the building</h2>
+          <p class="blurb">Ten Stanford buildings a day, drawn as their real OpenStreetMap footprints. Name each one from its outline.</p>
+          <p class="where"><span class="host">matmat202.github.io/stanford-outlines</span><span class="go" aria-hidden="true">&rarr;</span></p>
         </a>
         
       </li>
@@ -752,19 +677,120 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
         </a>
         
       </li>
-      <li class="site" style="--site:#a8401a;--site-dark:#f4a27e">
-        <a class="hit" href="https://matmat202.github.io/whos-off/">
-          <h2>Who&#x27;s Off · the world&#x27;s public holidays, any day</h2>
-          <p class="blurb">Which countries have a public holiday today, or on any day in 2026 and 2027 — nationwide and regional — and when a country&#x27;s next one is. Before you schedule that call.</p>
-          <p class="where"><span class="host">matmat202.github.io/whos-off</span><span class="go" aria-hidden="true">&rarr;</span></p>
-        </a>
-        
-      </li>
       <li class="site" style="--site:#b42318;--site-dark:#ff6b5e">
         <a class="hit" href="https://matmat202.github.io/cual-se-filtro/">
           <h2>¿Cuál se filtró más? · un juego diario de contraseñas</h2>
           <p class="blurb">Dos contraseñas que se usan en México: toca la que aparece más en filtraciones de datos. Diez pares al día, los mismos para todos.</p>
           <p class="where"><span class="host">matmat202.github.io/cual-se-filtro</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      </ul>
+    </section>
+    <section class="group" id="g-everywhere" aria-labelledby="g-everywhere-h">
+      <div class="group-h"><h2 id="g-everywhere-h">Everywhere</h2><p>tools and investigations for any town, any year</p></div>
+      <ul class="shelf">
+      <li class="site" style="--site:#6b7280;--site-dark:#9ca3af">
+        <a class="hit" href="https://matmat202.github.io/anyone-here-have-flu/">
+          <h2>Anyone here have flu?</h2>
+          <p class="blurb">The odds that someone in a room of N people in California is contagious with flu this week, from CDC surveillance data. Guess first.</p>
+          <p class="where"><span class="host">matmat202.github.io/anyone-here-have-flu</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#2f7d6d;--site-dark:#4fb3a0">
+        <a class="hit" href="https://matmat202.github.io/crypto-lifetimes/">
+          <h2>Crypto Lifetimes: when every cipher, hash and protocol was born, cracked and retired</h2>
+          <p class="blurb">30 ciphers, hashes, key exchanges and protocols from 1976 to today: when each was published, first weakened, practically broken and retired, every date quoted from its source.</p>
+          <p class="where"><span class="host">matmat202.github.io/crypto-lifetimes</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#9a5800;--site-dark:#f2b552">
+        <a class="hit" href="https://matmat202.github.io/daylight/">
+          <h2>Daylight · sunrise, sunset and day length for any town</h2>
+          <p class="blurb">Sunrise, sunset and day length for any town of 15,000+ people, on any day, in the town&#x27;s own time zone, with the whole year as a chart. Compare two towns.</p>
+          <p class="where"><span class="host">matmat202.github.io/daylight</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#a8352a;--site-dark:#ff8f7f">
+        <a class="hit" href="https://matmat202.github.io/for-the-date/">
+          <h2>For the Date · is today warm or cold for the date where you are?</h2>
+          <p class="blurb">Is today warm or cold, wet or dry, for the date? The forecast for any town of 15,000+ people, against the same days of the calendar in each of the 30 years 1991-2020.</p>
+          <p class="where"><span class="host">matmat202.github.io/for-the-date</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#0b6e74;--site-dark:#5cc8cf">
+        <a class="hit" href="https://matmat202.github.io/how-far/">
+          <h2>How Far? · the distance, direction and time difference between any two towns</h2>
+          <p class="blurb">How far apart are two towns? The distance as the crow flies, which way to set off, the halfway point, the time difference and a rough flight time, with the route on a world map.</p>
+          <p class="where"><span class="host">matmat202.github.io/how-far</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#2a5d8f;--site-dark:#8db8e6">
+        <a class="hit" href="https://matmat202.github.io/fog-decades/">
+          <h2>Is the Bay&#x27;s summer fog disappearing?</h2>
+          <p class="blurb">Every summer day at SFO and Oakland since 1948, read from NOAA&#x27;s hourly airport observations.</p>
+          <p class="where"><span class="host">matmat202.github.io/fog-decades</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#5b3fa8;--site-dark:#b9a6f0">
+        <a class="hit" href="https://matmat202.github.io/name-years/">
+          <h2>Name Years · every US first name, every year since 1880</h2>
+          <p class="blurb">Type a first name and see how many US babies were given it every year since 1880, when it peaked, its rank today, when half of everyone with it was born, and how old the ones alive now are. From Social Security records.</p>
+          <p class="where"><span class="host">matmat202.github.io/name-years</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#a8321a;--site-dark:#ff9a7a">
+        <a class="hit" href="https://matmat202.github.io/shaken/">
+          <h2>Shaken · the world&#x27;s earthquakes, and the biggest near you</h2>
+          <p class="blurb">Every magnitude 2.5+ earthquake in the past day, week or month, live from USGS, on a world map. Type your town to see the biggest ones near you.</p>
+          <p class="where"><span class="host">matmat202.github.io/shaken</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#1f63b5;--site-dark:#7fb0f0">
+        <a class="hit" href="https://matmat202.github.io/still-unnamed/">
+          <h2>Still Unnamed · the human genes known only by a placeholder</h2>
+          <p class="blurb">How many human protein-coding genes were known only by a placeholder symbol (C1orf, FAM, KIAA) each year since 1986, rebuilt from the HGNC gene-name database and checked against HGNC&#x27;s own published counts.</p>
+          <p class="where"><span class="host">matmat202.github.io/still-unnamed</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#6b7280;--site-dark:#9ca3af">
+        <a class="hit" href="https://matmat202.github.io/tide-table/">
+          <h2>Tide Table</h2>
+          <p class="blurb">The next high and low tide at any of NOAA&#x27;s 3,502 prediction stations, with the day&#x27;s curve, in the station&#x27;s own local time.</p>
+          <p class="where"><span class="host">matmat202.github.io/tide-table</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#5040b8;--site-dark:#a99cff">
+        <a class="hit" href="https://matmat202.github.io/when-works/">
+          <h2>When Works? · the hours when everyone is awake, across time zones</h2>
+          <p class="blurb">Pick a few towns anywhere and a day: see the hours when everyone is at work or at least awake, hour by hour in each town&#x27;s own time, and which clock changes are about to move the gap.</p>
+          <p class="where"><span class="host">matmat202.github.io/when-works</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#b45309;--site-dark:#e8921f">
+        <a class="hit" href="https://matmat202.github.io/where-did-i-park/">
+          <h2>Where Did I Park</h2>
+          <p class="blurb">Infers where you parked from your speed and position, and points you back. Nothing leaves your phone.</p>
+          <p class="where"><span class="host">matmat202.github.io/where-did-i-park</span><span class="go" aria-hidden="true">&rarr;</span></p>
+        </a>
+        
+      </li>
+      <li class="site" style="--site:#a8401a;--site-dark:#f4a27e">
+        <a class="hit" href="https://matmat202.github.io/whos-off/">
+          <h2>Who&#x27;s Off · the world&#x27;s public holidays, any day</h2>
+          <p class="blurb">Which countries have a public holiday today, or on any day in 2026 and 2027 — nationwide and regional — and when a country&#x27;s next one is. Before you schedule that call.</p>
+          <p class="where"><span class="host">matmat202.github.io/whos-off</span><span class="go" aria-hidden="true">&rarr;</span></p>
         </a>
         
       </li>
@@ -784,7 +810,8 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
         </a>
         
       </li>
-    </ul>
+      </ul>
+    </section>
   </main>
 
   <section class="contact" id="contact" aria-labelledby="contact-h">
@@ -800,7 +827,7 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
   </section>
 
   <footer>
-    <span>Rebuilt <time datetime="2026-11-15T23:10:35.353705+00:00">15 November 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
+    <span>Rebuilt <time datetime="2026-11-16T21:00:00.969451+00:00">16 November 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
     <a href="https://github.com/matmat202">github.com/matmat202</a>
   </footer>
 </div>

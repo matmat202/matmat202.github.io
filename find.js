@@ -1,6 +1,6 @@
 /* Find a site, on the hub: a filter over the shelf.
 
-   With 33 cards in one alphabetical column, a phone visitor looking for the tide table
+   With 33 cards, even in three runs (build.py GROUPS), a phone visitor looking for the tide table
    or the parking finder scrolls about ten screens. Typing "tide" should leave one card.
 
    What a query matches: the card's title, its blurb and its address, folded the same way
@@ -55,6 +55,8 @@
   if (!form) return;
   var box = form.querySelector('input'), say = document.getElementById('find-status');
   var lis = [].slice.call(document.querySelectorAll('.shelf .site'));
+  var groups = [].slice.call(document.querySelectorAll('.group'));
+  var jump = document.querySelector('nav.groups');
   var texts = lis.map(function (li) {
     return [].map.call(li.querySelectorAll('h2, .blurb, .host'), function (e) { return e.textContent; }).join(' ');
   });
@@ -63,6 +65,10 @@
     var q = box.value, kept = keep(texts, q), on = {};
     kept.forEach(function (i) { on[i] = true; });
     lis.forEach(function (li, i) { li.hidden = !on[i]; });
+    // A run with nothing left in it goes too, heading and all, and so does the jump row:
+    // its counts are the whole shelf's, and "On campus 10" over two cards is a lie.
+    groups.forEach(function (g) { g.hidden = !g.querySelector('.site:not([hidden])'); });
+    if (jump) jump.hidden = words(q).length > 0;
     say.textContent = status(kept.length, lis.length, q);
     if (push) {
       var u = new URL(location.href);
