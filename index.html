@@ -271,7 +271,12 @@ h1 i{color:var(--gold);font-style:italic}
 .tabs button:hover,.controls button:hover,.presets button:hover{border-color:var(--ink-2);color:var(--ink)}
 .tabs button[aria-selected="true"],.presets button[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
 .tabs button:focus-visible,.controls button:focus-visible,.presets button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.lab-grid{display:grid;gap:18px}
+/* minmax(0,1fr) on the ONE-column case too: a grid item defaults to
+   min-width:auto, so .lab-side's nowrap equation (and the stage) held the track
+   wider than a 360px phone once text-spacing or 200% text grew them -- measured
+   393px and 395px on 2026-11-17. The two-column rule below already said
+   minmax(0,...) for exactly this reason; the default was missed. */
+.lab-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
 @media (min-width:880px){ .lab-grid{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);align-items:start} }
 .stage{
   position:relative;aspect-ratio:16/10;border-radius:20px;overflow:hidden;
@@ -827,7 +832,7 @@ footer a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset
   </section>
 
   <footer>
-    <span>Rebuilt <time datetime="2026-11-17T04:15:35.588456+00:00">17 November 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
+    <span>Rebuilt <time datetime="2026-11-17T04:17:50.941681+00:00">17 November 2026</time> from the GitHub API &mdash; every public repo with Pages turned on.</span>
     <a href="https://github.com/matmat202">github.com/matmat202</a>
   </footer>
 </div>
