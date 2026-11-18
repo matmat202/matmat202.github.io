@@ -68,6 +68,23 @@
       .sort(function (a, b) { return a.hall < b.hall ? -1 : a.hall > b.hall ? 1 : 0; });
   }
 
+  // Halls serving the same special share one line: [{halls:[names], text, event}], in the
+  // order of each group's first hall. On Thanksgiving 2026 seven of eight halls served one
+  // 250-character menu, and listing it per hall made the band two phone screens tall.
+  function groupSpecials(sp) {
+    var groups = [], byText = {};
+    (sp || []).forEach(function (s) {
+      var g = byText[s.text];
+      if (!g) { g = byText[s.text] = { halls: [], text: s.text, event: false }; groups.push(g); }
+      g.halls.push(s.hall);
+      g.event = g.event || s.event;
+    });
+    return groups;
+  }
+  function hallsLabel(g, total) {
+    return g.halls.length > 1 && g.halls.length === total ? 'Every hall' : g.halls.join(', ');
+  }
+
   // The first high or low strictly after now, from NOAA's {predictions:[{t,v,type}]}.
   function nextTide(noaa, now) {
     var wall = campusWall(now);
@@ -108,7 +125,7 @@
 
   var API = {
     STATION: STATION, CAMPUS: CAMPUS, campusDay: campusDay, campusWall: campusWall, clock: clock,
-    dinnerDay: dinnerDay, specialsOn: specialsOn, nextTide: nextTide, tideLabel: tideLabel,
+    dinnerDay: dinnerDay, specialsOn: specialsOn, groupSpecials: groupSpecials, hallsLabel: hallsLabel, nextTide: nextTide, tideLabel: tideLabel,
     sunNext: sunNext, sunLabel: sunLabel, noaaUrl: noaaUrl,
   };
   if (typeof module === 'object' && module.exports) { module.exports = API; return; }
@@ -135,7 +152,9 @@
       var when = dd.tomorrow ? 'tomorrow' : 'today';
       row('t-dinner', '/stanford-dining-menus/', sp.length
         ? (dd.tomorrow ? '<span class="at">Tomorrow</span>' : '') +
-          '<ul>' + sp.map(function (s) { return '<li><b>' + esc(s.hall) + '</b> ' + esc(s.text) + '</li>'; }).join('') + '</ul>'
+          '<ul>' + groupSpecials(sp).map(function (g) {
+            return '<li><b>' + esc(hallsLabel(g, sp.length)) + '</b> ' + esc(g.text) + '</li>';
+          }).join('') + '</ul>'
         : 'No specials listed for ' + when);
     }).catch(function () {});
 
