@@ -9,10 +9,14 @@
          '<p>:days'   the days finished, for the streak
      stanford-outlines
          'outlines.v1' {days: {<day>: {n: answers, c: chosen or null}}}
+     cual-se-filtro (read from its app.js on 2026-11-20)
+         'cual-se-filtro'       {date: <day>, picks: [words tapped so far]}, today only
+         'cual-se-filtro-dias'  {<day>: right}, written when a ten is finished
 
    The games do not agree on what "today" is, and the hub has to use each one's own
    answer or it reports a finished game as unplayed:
-     local calendar date  — which-first, which-country, further-north, which-way
+     local calendar date  — which-first, which-country, further-north, which-way,
+                            cual-se-filtro
      campus date (Pacific) — stanford-outlines
      yesterday in UTC     — which-read-more, whose ten is the last day Wikimedia has
                             published. For a few hours after UTC midnight the game falls
@@ -33,6 +37,7 @@
     { repo: 'further-north', kind: 'picks', prefix: 'fn:', day: 'local' },
     { repo: 'which-way', kind: 'picks', prefix: 'ww:', day: 'local' },
     { repo: 'which-read-more', kind: 'picks', prefix: 'wrm:', day: 'utc-1' },
+    { repo: 'cual-se-filtro', kind: 'leak', key: 'cual-se-filtro', day: 'local' },
   ];
   var ROUNDS = 10;
 
@@ -92,6 +97,18 @@
         entries[d] = { played: played, of: e.c.length, right: right };
         if (played === e.c.length) finished.push(d);
       });
+    } else if (game.kind === 'leak') {
+      var hist = parse(get(game.key + '-dias'));
+      if (hist && typeof hist === 'object') {
+        Object.keys(hist).forEach(function (d) {
+          finished.push(d);
+          entries[d] = { played: ROUNDS, of: ROUNDS, right: typeof hist[d] === 'number' ? hist[d] : null };
+        });
+      }
+      var cur = parse(get(game.key));
+      if (cur && typeof cur.date === 'string' && Array.isArray(cur.picks) && cur.picks.length && !entries[cur.date]) {
+        entries[cur.date] = { played: Math.min(cur.picks.length, ROUNDS), of: ROUNDS, right: null };
+      }
     } else {
       var list = parse(get(game.prefix + 'days'));
       if (Array.isArray(list)) finished = list.filter(function (d) { return typeof d === 'string'; });
