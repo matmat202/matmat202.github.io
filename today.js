@@ -113,7 +113,11 @@
     var n = sunOn([t.getUTCFullYear(), t.getUTCMonth() + 1, t.getUTCDate()], CAMPUS);
     return n.rise == null ? null : { kind: 'Sunrise tomorrow', at: n.rise };
   }
-  function sunLabel(s) { return s.kind + ' ' + clock(campusWall(new Date(s.at)).slice(11, 16)); }
+  // To the nearest minute, as daylight (the page this line links to) and almanacs give it:
+  // the wall clock alone drops the seconds, so a 4:53:47 sunset read 4:53 here and 4:54 there.
+  function sunLabel(s) {
+    return s.kind + ' ' + clock(campusWall(new Date(Math.round(s.at / 60e3) * 60e3)).slice(11, 16));
+  }
 
   function noaaUrl(now) {
     return 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?' + new URLSearchParams({
