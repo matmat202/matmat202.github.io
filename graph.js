@@ -346,10 +346,11 @@
     if (q) q.addEventListener('input', function () { setTimeout(kick, 0); });
 
     size(); draw(0); kick();
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) {
-      visible = e[0].isIntersecting && !document.hidden; if (visible) kick();
-    }).observe(cv);
-    document.addEventListener('visibilitychange', function () { visible = !document.hidden; if (visible) kick(); });
+    // Two conditions, kept apart: a tab coming back must not restart a graph scrolled away.
+    var inView = true;
+    function seen() { visible = inView && !document.hidden; if (visible) kick(); }
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { inView = e[0].isIntersecting; seen(); }).observe(cv);
+    document.addEventListener('visibilitychange', seen);
     addEventListener('resize', function () { size(); tipFor = -1; kick(); });
     if (dark.addEventListener) dark.addEventListener('change', kick);
     fig.classList.add('live');
