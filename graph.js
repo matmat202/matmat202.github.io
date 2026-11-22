@@ -195,6 +195,18 @@
         d: li.style.getPropertyValue('--site-dark').trim() || '#9aa3ad',
       };
     });
+    // One node that is not a site: the physics lab. It has no .site card, so its `li`
+    // is a stub -- the only thing the renderer asks of li is `.hidden`, checked at
+    // three places. It steps aside whenever the shelf is being filtered, because a
+    // lone bright node while every real site dims reads as a bug, not emphasis.
+    info.push({
+      li: { get hidden() { return cards.some(function (c) { return c.hidden; }); } },
+      href: 'nature.html', special: true,
+      title: "Nature's intricacies",
+      blurb: 'physics lab simulations animated ball bounce pendulum wave chain water',
+      l: '#8a5a12', d: '#e8b45c',
+    });
+
     var links = edges(info.map(function (c) { return c.title + ' ' + c.title + ' ' + c.blurb; }),
                       api.K, api.FLOOR);
     var nbr = info.map(function () { return []; });
@@ -214,7 +226,7 @@
     function box() { var m = Math.min(W, H - 40); return { m: m, ox: (W - m) / 2, oy: (H - 40 - m) / 2 + 4 }; }
     function px(p) { var b = box(); return [b.ox + p.x * b.m, b.oy + p.y * b.m]; }
     function unit(x, y) { var b = box(); return [(x - b.ox) / b.m, (y - b.oy) / b.m]; }
-    function radius(i) { return 3.2 + Math.sqrt(nodes[i].deg) * 1.6; }
+    function radius(i) { return (info[i].special ? 5.6 : 3.2) + Math.sqrt(nodes[i].deg) * 1.6; }
     function at(x, y) {
       var best = -1, bd = 1e9;
       for (var i = 0; i < nodes.length; i++) {
@@ -249,6 +261,11 @@
       ctx.setLineDash([]);
       for (var i = 0; i < nodes.length; i++) {
         var c = dk ? info[i].d : info[i].l, r = radius(i), dim = info[i].li.hidden ? 0.08 : (on && !on[i] ? 0.22 : 1);
+        if (info[i].special && !info[i].li.hidden) {        // mark it, do not just enlarge it
+          var rp = px(nodes[i]);
+          ctx.globalAlpha = dim; ctx.strokeStyle = c; ctx.lineWidth = 1.2;
+          ctx.beginPath(); ctx.arc(rp[0], rp[1], r + 3.5, 0, 6.2832); ctx.stroke();
+        }
         var pulse = still ? 0 : Math.sin(t * 0.0012 + nodes[i].ph) * 0.5;
         ctx.fillStyle = c;
         ctx.globalAlpha = 0.16 * dim;
