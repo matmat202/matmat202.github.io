@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nature's intricacies</title>
+<meta name="description" content="Eight small pieces of physics that behave the way nobody expects — a ball that comes back from under a desk, a pendulum that stands on its head — each one simulated, checked, and animated from the numbers the simulation actually produced.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f5f3ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1114" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&display=swap">
+<style>
+/* House tokens copied from projects/hub/template.html so this reads as the same site. */
+:root{
+  --ground:#f5f3ee; --card:#fffefb; --ink:#15171a; --ink-2:#4f565f; --ink-3:#6b727a;
+  --line:#e0ddd5; --gold:#8a5a12; --accent:#2f6f8f;
+  --f-display:"Instrument Serif","Iowan Old Style",Georgia,serif;
+  --f-ui:"Geist","Helvetica Neue",Arial,sans-serif;
+  --pad:clamp(20px,5vw,56px);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --ground:#0f1114; --card:#161a1f; --ink:#eceae4; --ink-2:#a9afb6; --ink-3:#8d949c;
+    --line:#262b31; --accent:#9cc3d5; --gold:#e8b45c;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-ui);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:860px;margin:0 auto;padding:28px var(--pad) 72px}
+.back{font-size:14px;color:var(--ink-2);text-decoration:none}
+.back:hover{color:var(--ink)}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(34px,7vw,56px);
+  line-height:1.05;margin:26px 0 10px;text-wrap:balance}
+.lede{color:var(--ink-2);max-width:62ch;margin:0 0 6px}
+.note{color:var(--ink-3);font-size:14px;max-width:66ch;margin:14px 0 0}
+.grid{display:grid;gap:26px;margin-top:34px}
+.sim{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:clamp(16px,3vw,24px);display:grid;gap:12px}
+.sim h2{font-family:var(--f-display);font-weight:400;font-size:clamp(22px,4vw,30px);
+  margin:0;line-height:1.15;text-wrap:balance}
+.sim p{margin:0;max-width:64ch}
+.stage{position:relative;background:var(--ground);border:1px solid var(--line);
+  border-radius:10px;overflow:hidden}
+canvas{display:block;width:100%;height:auto}
+.finding{font-size:14.5px;color:var(--ink-2);border-left:2px solid var(--gold);
+  padding-left:12px;max-width:66ch}
+.row{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;font-size:13.5px;color:var(--ink-3)}
+button{font:inherit;font-size:13.5px;padding:5px 12px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--line);background:var(--card);color:var(--ink)}
+button:hover{border-color:var(--ink-3)}
+.key{display:inline-flex;align-items:center;gap:6px}
+.sw{width:22px;height:3px;border-radius:2px;display:inline-block}
+.pending{color:var(--ink-3);font-size:14px;padding:18px 0}
+</style>
+<div class="wrap">
+<a class="back" href="./">&larr; matmat202</a>
+<h1>Nature's intricacies</h1>
+<p class="lede">Eight small pieces of physics that do the opposite of what you would guess.
+A ball that comes back to you from under a desk. A pendulum that stands on its head. Three
+balls that collide infinitely often in finite time.</p>
+<p class="lede">Each one is simulated from first principles, checked against exact limits or
+published experiments, and then animated <em>from the numbers the simulation produced</em> —
+nothing here is a drawing of what the physics is supposed to look like.</p>
+<div class="grid" id="grid"><p class="pending">Loading the simulations…</p></div>
+<p class="note" id="note"></p>
+</div>
+<script type="module">
+const SIMS = ["superball","kapitza","turntable","nesterenko","bounce","column","bristlebot","jump"];
+const css = (n) => getComputedStyle(document.body).getPropertyValue(n).trim();
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const SERIES = ["#2f6f8f", "#b8651b", "#4b7f52"];
+
+function card(d) {
+  const el = document.createElement("section");
+  el.className = "sim";
+  const keys = (d.tracks || d.series || []).map((t, i) =>
+    `<span class="key"><span class="sw" style="background:${SERIES[i % 3]}"></span>${t.label}</span>`).join("");
+  el.innerHTML = `<h2>${d.title}</h2><p>${d.blurb}</p>
+    <div class="stage"><canvas></canvas></div>
+    <div class="row">${keys}${d.kind === "curve" ? "" : '<button type="button">Replay</button>'}</div>
+    <p class="finding">${d.finding}</p>`;
+  return el;
+}
+
+function fit(cv, aspect) {
+  const w = cv.parentElement.clientWidth, dpr = devicePixelRatio || 1;
+  const h = Math.max(150, Math.min(380, Math.round(w * aspect)));
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + "px";
+  const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return [g, w, h];
+}
+
+// world -> screen for a [x, y, w, h] view box, y up, preserving aspect
+function mapper(view, w, h, padpx) {
+  const [vx, vy, vw, vh] = view;
+  const s = Math.min((w - 2 * padpx) / vw, (h - 2 * padpx) / vh);
+  const ox = (w - vw * s) / 2, oy = (h - vh * s) / 2;
+  return (x, y) => [ox + (x - vx) * s, h - oy - (y - vy) * s];
+}
+
+function drawPath(g, d, w, h, frac) {
+  const m = mapper(d.view, w, h, 14);
+  if (d.table) {                                   // the desk, for the superball
+    const [x0, x1, H] = d.table, a = m(x0, H), b = m(x1, H);
+    g.strokeStyle = css("--ink-3"); g.lineWidth = 3;
+    g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); g.stroke();
+    g.lineWidth = 2; g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(a[0], m(x0, 0)[1]); g.stroke();
+  }
+  const floor = m(d.view[0], d.view[1]);
+  g.strokeStyle = css("--line"); g.lineWidth = 1;
+  g.beginPath(); g.moveTo(0, floor[1]); g.lineTo(w, floor[1]); g.stroke();
+  d.tracks.forEach((t, i) => {
+    const col = SERIES[i % 3], n = Math.max(2, Math.floor(t.pts.length * frac));
+    g.strokeStyle = col; g.globalAlpha = 0.28; g.lineWidth = 1.5;
+    g.beginPath(); t.pts.forEach((p, k) => { const [X, Y] = m(p[0], p[1]); k ? g.lineTo(X, Y) : g.moveTo(X, Y); });
+    g.stroke();
+    g.globalAlpha = 1; g.lineWidth = 2.5; g.beginPath();
+    for (let k = Math.max(0, n - 90); k < n; k++) { const [X, Y] = m(t.pts[k][0], t.pts[k][1]); k === Math.max(0, n - 90) ? g.moveTo(X, Y) : g.lineTo(X, Y); }
+    g.stroke();
+    const [X, Y] = m(t.pts[n - 1][0], t.pts[n - 1][1]);
+    g.fillStyle = col; g.beginPath(); g.arc(X, Y, 5, 0, 7); g.fill();
+  });
+}
+
+function drawField(g, d, w, h, frac) {
+  const f = d.frames[Math.min(d.frames.length - 1, Math.floor(d.frames.length * frac))];
+  const n = f.length, bw = (w - 28) / n;
+  g.strokeStyle = css("--line"); g.lineWidth = 1;
+  g.beginPath(); g.moveTo(0, h - 18); g.lineTo(w, h - 18); g.stroke();
+  for (let i = 0; i < n; i++) {
+    const v = Math.max(0, f[i]) / d.peak, bh = v * (h - 40);
+    g.fillStyle = v > 0.02 ? SERIES[0] : css("--line");
+    g.fillRect(14 + i * bw + 1, h - 18 - Math.max(2, bh), Math.max(1.5, bw - 2), Math.max(2, bh));
+  }
+}
+
+function drawCurve(g, d, w, h) {
+  const m = mapper(d.view, w, h, 30);
+  const [vx, vy, vw, vh] = d.view;
+  g.strokeStyle = css("--line"); g.lineWidth = 1;
+  const base = m(vx, Math.max(vy, 0)), left = m(vx, vy);
+  g.beginPath(); g.moveTo(left[0], base[1]); g.lineTo(m(vx + vw, 0)[0], base[1]); g.stroke();
+  g.beginPath(); g.moveTo(left[0], m(vx, vy)[1]); g.lineTo(left[0], m(vx, vy + vh)[1]); g.stroke();
+  if (d.mark) {
+    const a = m(d.mark.x, vy), b = m(d.mark.x, vy + vh);
+    g.save(); g.setLineDash([4, 4]); g.strokeStyle = css("--gold");
+    g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); g.stroke(); g.restore();
+    g.fillStyle = css("--gold"); g.font = "12px " + css("--f-ui");
+    g.fillText(d.mark.label, Math.min(w - 70, a[0] + 6), b[1] + 13);
+  }
+  d.series.forEach((sv, i) => {
+    g.strokeStyle = SERIES[i % 3]; g.lineWidth = i ? 1.5 : 2.5;
+    if (i) g.setLineDash([5, 4]);
+    g.beginPath();
+    sv.pts.forEach((p, k) => { const [X, Y] = m(p[0], Math.max(vy, Math.min(vy + vh, p[1]))); k ? g.lineTo(X, Y) : g.moveTo(X, Y); });
+    g.stroke(); g.setLineDash([]);
+  });
+  g.fillStyle = css("--ink-3"); g.font = "12px " + css("--f-ui");
+  g.fillText(d.axes[0], w / 2 - 60, h - 6);
+  g.save(); g.translate(11, h / 2 + 50); g.rotate(-Math.PI / 2); g.fillText(d.axes[1], 0, 0); g.restore();
+}
+
+function mount(d, el) {
+  const cv = el.querySelector("canvas"), btn = el.querySelector("button");
+  const aspect = d.kind === "curve" ? 0.52 : (d.kind === "field" ? 0.34 : 0.56);
+  let t0 = performance.now(), playing = d.kind !== "curve" && !reduced, raf = 0;
+  const DUR = 7000;
+  function frame(now) {
+    const [g, w, h] = fit(cv, aspect);
+    g.clearRect(0, 0, w, h);
+    const frac = playing ? Math.min(1, ((now - t0) % DUR) / DUR) : 1;
+    if (d.kind === "curve") drawCurve(g, d, w, h);
+    else if (d.kind === "field") drawField(g, d, w, h, frac);
+    else drawPath(g, d, w, h, frac);
+    raf = playing ? requestAnimationFrame(frame) : 0;
+  }
+  // Draw one frame NOW, before any visibility logic. The first version only ever drew
+  // from inside the rAF loop, so when the observer's first callback said "not
+  // intersecting" the loop was cancelled and that canvas stayed completely blank -- the
+  // render gate caught nesterenko at 0% ink. A panel must have content at rest anyway.
+  frame(performance.now());
+  cancelAnimationFrame(raf); raf = 0;
+
+  // Two conditions kept apart, the same split projects/hub/site/sims.js arrived at after
+  // its own offscreen bug (f828132a): a tab coming back must not restart a panel that is
+  // scrolled away, and losing sight of one must not make it unrecoverable.
+  let inView = !("IntersectionObserver" in window);
+  const kick = () => { if (!raf && inView && !document.hidden && playing) raf = requestAnimationFrame(frame); };
+  const stop = () => { if (raf) { cancelAnimationFrame(raf); raf = 0; } };
+  const seen = () => { (inView && !document.hidden) ? kick() : stop(); };
+  if (!inView) new IntersectionObserver((e) => { inView = e[0].isIntersecting; seen(); },
+                                        { rootMargin: "140px" }).observe(el.querySelector(".stage"));
+  else seen();
+  document.addEventListener("visibilitychange", seen);
+  if (btn) btn.onclick = () => { t0 = performance.now(); playing = true; kick(); };
+  let rz = 0;
+  addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { frame(performance.now()); if (!playing) stop(); }, 150); }, { passive: true });
+}
+
+const grid = document.getElementById("grid");
+const got = await Promise.all(SIMS.map((s) =>
+  fetch(`nature/${s}.json`).then((r) => r.ok ? r.json() : null).catch(() => null)));
+grid.innerHTML = "";
+let n = 0;
+got.forEach((d) => { if (!d) return; n++; const el = card(d); grid.appendChild(el); mount(d, el); });
+document.getElementById("note").textContent = n === SIMS.length
+  ? `${n} simulations, every number computed by the gated Python in the sandbox and replayed here — the page does no physics of its own.`
+  : `${n} of ${SIMS.length} simulations loaded.`;
+</script>
