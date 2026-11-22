@@ -540,11 +540,12 @@
     document.addEventListener('fullscreenchange', function () { size(); S = {}; kick(); });
 
     size(); setPlay(playing); select(which);
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) {
-      visible = e[0].isIntersecting && !document.hidden; if (visible) kick();
-    }, { rootMargin: '100px' }).observe(stage);
-    else visible = true;
-    document.addEventListener('visibilitychange', function () { visible = !document.hidden; if (visible) kick(); });
+    // Two conditions, kept apart: a tab coming back must not restart a stage scrolled away.
+    var inView = !('IntersectionObserver' in window);
+    function seen() { visible = inView && !document.hidden; if (visible) kick(); }
+    if (!inView) new IntersectionObserver(function (e) { inView = e[0].isIntersecting; seen(); }, { rootMargin: '100px' }).observe(stage);
+    else seen();
+    document.addEventListener('visibilitychange', seen);
     var rz = 0;
     addEventListener('resize', function () {
       clearTimeout(rz);
