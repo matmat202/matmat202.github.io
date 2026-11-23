@@ -1,9 +1,10 @@
-/* Today on campus, on the hub: three facts the other sites already know, read live.
+/* Today on campus, on the hub: facts the other sites already know, read live.
 
    The point of the hub owning this is that every site serves from matmat202.github.io, so
    it can read their published data with no copy of its own:
 
      dinner specials  /stanford-dining-menus/data/specials.json   same origin
+     break closures   /stanford-dining-menus/data/holidays.json   same origin (only during a break)
                       /stanford-dining-menus/data/site.json       hall ids -> names
      next tide        NOAA CO-OPS, the API tide-table itself calls (CORS *)
      sunset           /daylight/sun-logic.js, imported as daylight's own module
@@ -85,6 +86,46 @@
     return g.halls.length > 1 && g.halls.length === total ? 'Every hall' : g.halls.join(', ');
   }
 
+  // Which halls a break closes right now, from the dining site's holidays.json (its
+  // hand-transcribed R&DE break PDF; site.json keeps listing regular hours through it).
+  // null when no hall in site.json is closed at `now` -- an ordinary day shows no line.
+  // Else {label, open: [names], closed: n, dinner: [start, end] | null}, dinner set only
+  // when the break's hall_hours give every open hall the same dinner today.
+  // Comparisons are on the campus wall clock 'YYYY-MM-DDTHH:MM', the file's own format.
+  function breakHalls(H, site, now) {
+    if (!H || !H.closed) return null;
+    var t = campusWall(now).replace(' ', 'T'), day = t.slice(0, 10);
+    var halls = (site && site.halls) || [], open = [], closed = 0;
+    halls.forEach(function (h) {
+      var shut = H.closed.some(function (c) {
+        return t >= c.from && t < c.until && c.keys.indexOf('hall:' + h.id) >= 0;
+      });
+      if (shut) closed++; else open.push(h);
+    });
+    if (!closed) return null;
+    var label = H.label || 'the break';
+    (H.labels || []).forEach(function (l) { if (t >= l.from && t < l.until) label = l.label; });
+    var dinner = null;
+    if (open.length) {
+      var ds = open.map(function (h) {
+        var r = (H.hall_hours || []).filter(function (r) {
+          return r.ids.indexOf(h.id) >= 0 && day >= r.from && day <= r.to;
+        })[0];
+        return r && r.hours && r.hours.Dinner ? r.hours.Dinner.join('-') : null;
+      });
+      if (ds[0] && ds.every(function (d) { return d === ds[0]; })) dinner = ds[0].split('-');
+    }
+    return { label: label, open: open.map(function (h) { return h.name; }), closed: closed, dinner: dinner };
+  }
+  function pad5(hm) { return hm.length === 4 ? '0' + hm : hm; }
+  function breakLabel(b) {
+    if (!b.open.length) return 'Every hall closed for ' + b.label;
+    var names = b.open.length === 1 ? b.open[0]
+      : b.open.slice(0, -1).join(', ') + ' and ' + b.open[b.open.length - 1];
+    return b.label + ': only ' + names + ' open, ' + b.closed + ' closed' +
+      (b.dinner ? '; dinner ' + clock(pad5(b.dinner[0])) + '–' + clock(pad5(b.dinner[1])) : '');
+  }
+
   // The first high or low strictly after now, from NOAA's {predictions:[{t,v,type}]}.
   function nextTide(noaa, now) {
     var wall = campusWall(now);
@@ -129,7 +170,7 @@
 
   var API = {
     STATION: STATION, CAMPUS: CAMPUS, campusDay: campusDay, campusWall: campusWall, clock: clock,
-    dinnerDay: dinnerDay, specialsOn: specialsOn, groupSpecials: groupSpecials, hallsLabel: hallsLabel, nextTide: nextTide, tideLabel: tideLabel,
+    dinnerDay: dinnerDay, specialsOn: specialsOn, groupSpecials: groupSpecials, hallsLabel: hallsLabel, breakHalls: breakHalls, breakLabel: breakLabel, nextTide: nextTide, tideLabel: tideLabel,
     sunNext: sunNext, sunLabel: sunLabel, noaaUrl: noaaUrl,
   };
   if (typeof module === 'object' && module.exports) { module.exports = API; return; }
@@ -160,6 +201,12 @@
             return '<li><b>' + esc(hallsLabel(g, sp.length)) + '</b> ' + esc(g.text) + '</li>';
           }).join('') + '</ul>'
         : 'No specials listed for ' + when);
+    }).catch(function () {});
+
+  Promise.all([json('/stanford-dining-menus/data/holidays.json'), json('/stanford-dining-menus/data/site.json')])
+    .then(function (r) {
+      var b = breakHalls(r[0], r[1], now);
+      if (b) row('t-halls', '/stanford-dining-menus/', esc(breakLabel(b)));
     }).catch(function () {});
 
   json(noaaUrl(now)).then(function (r) {
