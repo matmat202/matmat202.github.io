@@ -8,6 +8,7 @@
                       /stanford-dining-menus/data/site.json       hall ids -> names
      next tide        NOAA CO-OPS, the API tide-table itself calls (CORS *)
      sunset           /daylight/sun-logic.js, imported as daylight's own module
+     the film         /stanford-theatre/data/archive.json             same origin
 
    Each line links to the site that answers it in full. A line whose source fails is
    dropped rather than shown stale or guessed: specials.json covers a two-week PDF, so on
@@ -126,6 +127,59 @@
       (b.dinner ? '; dinner ' + clock(pad5(b.dinner[0])) + '–' + clock(pad5(b.dinner[1])) : '');
   }
 
+  // What the Stanford Theatre is showing, from the theatre site's archive.json
+  // ({films: [{t, y, s: [[start, program, end?]]}]}, transcribed from its program pages).
+  // {on, start, end, films: [{t, y}]}: the bill on today (on: true), else the next run to
+  // open within two weeks; null if neither. A showing with no end on file is one day,
+  // except that one which opened in the last three days could be a run still going, and
+  // "Thursday" for a film that is on tonight is worse than no line, so that gives null.
+  var BILL_AHEAD = 14, BILL_UNSURE = 3;
+  function addDays(day, n) { return new Date(Date.parse(day + 'T12:00:00Z') + n * 864e5).toISOString().slice(0, 10); }
+  function filmBill(archive, now) {
+    var today = campusDay(now), last = addDays(today, BILL_AHEAD), unsure = addDays(today, -BILL_UNSURE);
+    var runs = [], doubt = false;
+    ((archive && archive.films) || []).forEach(function (f) {
+      (f.s || []).forEach(function (s) {
+        var start = s[0], end = s[2] || s[0];
+        if (!s[2] && start < today && start >= unsure) doubt = true;
+        if (end >= today && start <= last) runs.push({ start: start, end: end, film: { t: f.t, y: f.y } });
+      });
+    });
+    if (doubt || !runs.length) return null;
+    var on = runs.filter(function (r) { return r.start <= today; });
+    var pick = on.length ? on : runs.filter(function (r) {
+      return r.start === runs.reduce(function (m, x) { return x.start < m ? x.start : m; }, runs[0].start);
+    });
+    var ends = pick.map(function (r) { return r.end; });
+    var films = pick.map(function (r) { return r.film; })
+      .filter(function (f, i, a) { return a.findIndex(function (g) { return g.t === f.t && g.y === f.y; }) === i; })
+      .sort(function (a, b) { return a.t < b.t ? -1 : a.t > b.t ? 1 : 0; });
+    return {
+      on: !!on.length, start: on.length ? today : pick[0].start, films: films,
+      // Runs on together that close on different days: say no end rather than the wrong one.
+      end: ends.every(function (e) { return e === ends[0]; }) ? ends[0] : null,
+    };
+  }
+  var WEEKDAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  // A campus date as a reader says it from `today`: today, tomorrow, a weekday within the
+  // week, else 'Dec 3'.
+  function dayWord(day, today) {
+    var gap = Math.round((Date.parse(day) - Date.parse(today)) / 864e5);
+    if (gap === 0) return 'today';
+    if (gap === 1) return 'tomorrow';
+    if (gap > 1 && gap < 7) return WEEKDAY[new Date(Date.parse(day + 'T12:00:00Z')).getUTCDay()];
+    return MON[+day.slice(5, 7) - 1] + ' ' + +day.slice(8, 10);
+  }
+  function billLabel(b, now) {
+    var today = campusDay(now), ts = b.films.map(function (f) { return f.t + (f.y ? ' (' + f.y + ')' : ''); });
+    var names = ts.length === 1 ? ts[0] : ts.slice(0, -1).join(', ') + ' and ' + ts[ts.length - 1];
+    var from = dayWord(b.start, today);
+    var to = b.end && b.end > b.start ? dayWord(b.end, today) : null;
+    var span = !to ? from : from + (to === 'tomorrow' ? ' and ' : b.on ? ' through ' : ' to ') + to;
+    return names + ', ' + span;
+  }
+
   // The first high or low strictly after now, from NOAA's {predictions:[{t,v,type}]}.
   function nextTide(noaa, now) {
     var wall = campusWall(now);
@@ -171,6 +225,7 @@
   var API = {
     STATION: STATION, CAMPUS: CAMPUS, campusDay: campusDay, campusWall: campusWall, clock: clock,
     dinnerDay: dinnerDay, specialsOn: specialsOn, groupSpecials: groupSpecials, hallsLabel: hallsLabel, breakHalls: breakHalls, breakLabel: breakLabel, nextTide: nextTide, tideLabel: tideLabel,
+    filmBill: filmBill, dayWord: dayWord, billLabel: billLabel,
     sunNext: sunNext, sunLabel: sunLabel, noaaUrl: noaaUrl,
   };
   if (typeof module === 'object' && module.exports) { module.exports = API; return; }
@@ -208,6 +263,11 @@
       var b = breakHalls(r[0], r[1], now);
       if (b) row('t-halls', '/stanford-dining-menus/', esc(breakLabel(b)));
     }).catch(function () {});
+
+  json('/stanford-theatre/data/archive.json').then(function (a) {
+    var b = filmBill(a, now);
+    if (b) row('t-film', '/stanford-theatre/', esc(billLabel(b, now)) + ' <span class="at">at the Stanford Theatre</span>');
+  }).catch(function () {});
 
   json(noaaUrl(now)).then(function (r) {
     var t = nextTide(r, now);

@@ -59,12 +59,12 @@ ul.funnel .bar{display:block;height:10px;border-radius:5px;background:var(--acce
 set up on my own machine. I wrote the rules it works under; it picks most of its own projects,
 builds them, tests them and keeps a journal. These are the rules, and what came out.</p>
 <div class="stats">
-<div class="stat"><b>32</b><span>public sites</span></div>
-<div class="stat"><b>457</b><span>projects opened</span></div>
-<div class="stat"><b>2,573</b><span>commits</span></div>
-<div class="stat"><b>2,132</b><span>agent sessions</span></div>
-<div class="stat"><b>67,528</b><span>tool calls</span></div>
-<div class="stat"><b>24</b><span>days</span></div>
+<div class="stat"><b>34</b><span>public sites</span></div>
+<div class="stat"><b>512</b><span>projects opened</span></div>
+<div class="stat"><b>4,190</b><span>commits</span></div>
+<div class="stat"><b>2,975</b><span>agent sessions</span></div>
+<div class="stat"><b>96,122</b><span>tool calls</span></div>
+<div class="stat"><b>38</b><span>days</span></div>
 </div>
 
 <h2>The rules</h2>
@@ -83,20 +83,20 @@ weight.</p>
 <p class="lede">With nothing assigned, a session thinks up candidates, checks each against
 everything already built here and on the web, and scores the survivors. At least 4 in 10 die at the check, because the thing already exists.</p>
 <ul class="funnel">
-<li><span class="bar" style="--w:1.000"></span><b>5,879</b> ideas written down and checked</li>
-<li><span class="bar" style="--w:0.501"></span><b>2,944</b> closed because they already existed, here or elsewhere</li>
-<li><span class="bar" style="--w:0.061"></span><b>361</b> promoted to a project</li>
+<li><span class="bar" style="--w:1.000"></span><b>6,217</b> ideas written down and checked</li>
+<li><span class="bar" style="--w:0.499"></span><b>3,100</b> closed because they already existed, here or elsewhere</li>
+<li><span class="bar" style="--w:0.065"></span><b>402</b> promoted to a project</li>
 </ul>
-<p class="lede">Of all 457 projects, its own and mine, <b>362</b> are finished and have been run, and <b>57</b> were abandoned — 56 of those with the reason written down, because a dead end recorded is worth more than one left to stall.</p>
+<p class="lede">Of all 512 projects, its own and mine, <b>407</b> are finished and have been run, and <b>63</b> were abandoned — 61 of those with the reason written down, because a dead end recorded is worth more than one left to stall.</p>
 
 <h2>What I ask of it</h2>
-<p class="lede">29 of the projects were mine to assign; the rest it proposed itself.
+<p class="lede">38 of the projects were mine to assign; the rest it proposed itself.
 Mine always come first, and it drops its own work the moment I ask for something. Everything
-else — 7,125 journal entries since 2026-10-17 — it does on its own.</p>
+else — 11,043 journal entries since 2026-10-17 — it does on its own.</p>
 
-<script type="application/json" id="counts">{"abandoned": 57, "abandoned_reasoned": 56, "candidates": 5879, "census_at": "2026-11-10", "commissioned": 29, "commits": 2573, "days": 24, "done": 362, "existed": 2944, "first": "2026-10-17", "journal": 7125, "projects": 457, "promoted": 361, "sessions": 2132, "sites": 32, "tool_calls": 67528}</script>
-<p class="foot">Counted from the repository on 2026-11-10: projects, commits and the journal from
-git and the state file; sessions from the transcript census of 2026-11-10 (this workspace only; tool calls are
+<script type="application/json" id="counts">{"abandoned": 63, "abandoned_reasoned": 61, "candidates": 6217, "census_at": "2026-11-24", "commissioned": 38, "commits": 4190, "days": 38, "done": 407, "existed": 3100, "first": "2026-10-17", "journal": 11043, "projects": 512, "promoted": 402, "sessions": 2975, "sites": 34, "tool_calls": 96122}</script>
+<p class="foot">Counted from the repository on 2026-11-24: projects, commits and the journal from
+git and the state file; sessions from the transcript census of 2026-11-24 (this workspace only; tool calls are
 machine-wide, which adds a handful of other sessions).
 The ideas count is a lower bound — only verdicts that say so in words are counted as
 "already existed".</p>
